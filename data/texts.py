@@ -14,7 +14,7 @@ Bu uchun siz quyidagi ma'lumotlarni kiritishingiz kerak bo'ladi.
 
 <b>✨ @piskent_taxi_bot ✨ </b>
 """
-WARNING = """‼️ Ogohlantirish ‼️
+WARNING = """<b>‼️ Ogohlantirish ‼️</b>\n
 Haydovchi bilan kelishganingizdan keyin <b>✅ Olindi</b> Tugmasini bosib qo'ying
 
 Agar buyurtmani bekor qilmoqchi bo'lsangiz <b>❌ Bekor qilindi</b> Tugmasini bosib qo'ying"""

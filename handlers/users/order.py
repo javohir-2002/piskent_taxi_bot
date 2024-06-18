@@ -1,3 +1,4 @@
+import re
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
@@ -5,9 +6,14 @@ from aiogram.dispatcher.filters import Text
 from data.texts import WARNING
 from loader import dp, bot
 from states.order import OrderData
-from data.config import CHANNEL_ID, GROUP_ID
+from data.config import GROUP_ID
 from keyboards.default.order import status, order, cancel
 from filters.prived_chat import IsPrivate
+
+# Telefon raqam formatini tekshirish uchun funksiya
+def is_valid_phone(phone):
+    return re.fullmatch(r'(\+?\d{1,3})?\s?\d{9,15}', phone) is not None
+
 
 
 @dp.message_handler(IsPrivate(), Text("⬅️ Bekor qilish"), state="*")
@@ -21,7 +27,7 @@ async def cancel_order(message: types.Message, state: FSMContext):
 
 @dp.message_handler(IsPrivate(), Text("🚕 TAXI 🚕"))
 async def start_ordering(message: types.Message, state: FSMContext):
-    await message.answer("Ismingizni kiriting.", reply_markup=cancel)
+    await message.answer("👤 Ismingizni kiriting.", reply_markup=cancel)
     await OrderData.name.set()
 
 
@@ -29,7 +35,7 @@ async def start_ordering(message: types.Message, state: FSMContext):
 async def get_user_name(message: types.Message, state: FSMContext):
     name = message.text.title()
     await state.update_data(name=name)
-    await message.answer("Qayerdan olib ketish kerak?")
+    await message.answer("📍 Qayerdan olib ketish kerak?")
     await OrderData.next()
 
 
@@ -37,7 +43,7 @@ async def get_user_name(message: types.Message, state: FSMContext):
 async def get_user_from_where(message: types.Message, state: FSMContext):
     from_where = message.text.capitalize()
     await state.update_data(from_where=from_where)
-    await message.answer("Qayerga olib borish kerak?")
+    await message.answer("🚕 Qayerga olib borish kerak?")
     await OrderData.next()
 
 
@@ -45,7 +51,7 @@ async def get_user_from_where(message: types.Message, state: FSMContext):
 async def get_user_to_where(message: types.Message, state: FSMContext):
     to_where = message.text.capitalize()
     await state.update_data(to_where=to_where)
-    await message.answer("Odam soni nechta?")
+    await message.answer("👥 Odam soni nechta?")
     await OrderData.next()
 
 
@@ -53,7 +59,7 @@ async def get_user_to_where(message: types.Message, state: FSMContext):
 async def get_num_of_people(message: types.Message, state: FSMContext):
     num_of_people = message.text
     await state.update_data(num_of_people=num_of_people)
-    await message.answer("Qancha to'laysiz?")
+    await message.answer("💰 Qancha to'laysiz?")
     await OrderData.next()
 
 
@@ -61,16 +67,19 @@ async def get_num_of_people(message: types.Message, state: FSMContext):
 async def get_price(message: types.Message, state: FSMContext):
     price = message.text
     await state.update_data(price=price)
-    await message.answer("Bog'lanish uchun telefon raqam kiriting?")
+    await message.answer("📞 Bog'lanish uchun telefon raqam kiriting?")
     await OrderData.next()
 
 
 @dp.message_handler(IsPrivate(), state=OrderData.phone)
 async def get_phone(message: types.Message, state: FSMContext):
     phone = message.text
-    await state.update_data(phone=phone)
-    await message.answer("Qo'shimcha ma'umot kiritishingiz mumkin?")
-    await OrderData.next()
+    if is_valid_phone(phone):
+        await state.update_data(phone=phone)
+        await message.answer("💬 Qo'shimcha ma'lumot kiritishingiz mumkin?")
+        await OrderData.next()
+    else:
+        await message.answer("❌ Telefon raqam noto'g'ri. Iltimos, telefon raqamni to'g'ri formatda kiriting. Masalan: +998901234567 yoki 901234567")
 
 
 @dp.message_handler(IsPrivate(), state=OrderData.addition)
@@ -106,6 +115,9 @@ async def delete_group_post(message: types.Message):
     if group_message_id:
         await bot.delete_message(GROUP_ID, group_message_id)
         await message.answer("Post o'chirildi.", reply_markup=order)
+        await message.answer(
+        "Taxi chaqirish uchun <b>🚕 TAXI 🚕</b> tugmasiga bosing", reply_markup=order
+        )
     else:
         await message.answer(
             "Post o'chirib bo'lmadi, xabar identifikatori topilmadi.",
