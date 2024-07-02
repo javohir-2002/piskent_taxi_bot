@@ -102,7 +102,7 @@ async def get_addition(message: types.Message, state: FSMContext):
     bot["group_message_id"] = sent_message.message_id  # Save the message id
 
     await message.answer(
-        "Post @piskent_taxi guruhiga yuborildi.\nSiz bilan tez orada bog'lanishadi."
+        "Post @piskent_taxi_chat guruhiga yuborildi.\nSiz bilan tez orada bog'lanishadi."
     )
     await message.answer(WARNING, reply_markup=status)
     await state.finish()
