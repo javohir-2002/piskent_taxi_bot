@@ -9,7 +9,7 @@ from filters.prived_chat import IsPrivate
 
 @dp.message_handler(IsPrivate(), CommandStart())
 async def bot_start(message: types.Message):
-    await message.answer(WELCOME_TEXT, parse_mode="HTML")
-    await message.answer(
-        "Taxi chaqirish uchun <b>🚕 TAXI 🚕</b> tugmasiga bosing", reply_markup=order
-    )
+    await message.answer(WELCOME_TEXT, parse_mode="HTML", reply_markup=order)
+    # await message.answer(
+    #     "Taxi chaqirish uchun <b>🚕 TAXI 🚕</b> tugmasiga bosing", reply_markup=order
+    # )

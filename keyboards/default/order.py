@@ -3,8 +3,11 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
 order = ReplyKeyboardMarkup(
     keyboard=[
-        [KeyboardButton(text="🚕 TAXI 🚕"), KeyboardButton(text="✍️ E'lonni qo'lda yozish ✍️")],
-        [KeyboardButton(text="Xatolik haqida xabar berish")],
+        [
+            # KeyboardButton(text="🚕 TAXI 🚕"),
+            KeyboardButton(text="✍️ Taxi chaqirish ✍️")
+        ],
+        # [KeyboardButton(text="Xatolik haqida xabar berish")],
     ],
     resize_keyboard=True,
 )
